@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Questionnaire</title>
+  </head>
+  <body>
+    <h1>{{ question }}</h1>
+    <form action="{{ url_for('evaluate') }}" method="POST">
+      <input type="text" name="answer">
+      <input type="submit" value="Evaluer la réponse">
+    </form>
+    <br>
+    <form action="{{ url_for('get_question') }}">
+      <input type="submit" value="Nouvelle question">
+    </form>
+  </body>
+</html>
+

@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title>Titre de votre page</title>
+</head>
+<body>
+    <h1>Titre de votre page</h1>
+    <p>Question : <span id="question"></span></p>
+    <button onclick="window.location.reload()">Random Question</button>
+    <form method="POST" action="{{ url_for('check_answer') }}">
+        <label for="answer">Réponse :</label>
+        <input type="text" id="answer" name="answer">
+        <button type="submit">Evaluate Answer</button>
+    </form>
+    <p>Réponse : {{ result }}</p>
+    <script>
+        // Code JavaScript pour récupérer et afficher une question aléatoire
+        var questions = [
+            'Question 1',
+            'Question 2',
+            'Question 3',
+            // Ajoutez d'autres questions ici
+        ];
+        var question = questions[Math.floor(Math.random() * questions.length)];
+        document.getElementById('question').innerHTML = question;
+    </script>
+</body>
+</html>
+
