@@ -1,67 +1,47 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for
 import random
 
 app = Flask(__name__)
 
-# liste de questions clés
+# Liste des questions
 questions = {
     "Git": "Qu'est-ce qu'un commit ?",
     "Python": "Qu'est-ce que PEP 8 ?",
     "Linux": "Comment lister les fichiers d'un répertoire en ligne de commande ?"
 }
 
-# dictionnaire de réponses attendues pour chaque question
+# Dictionnaire des réponses attendues pour chaque question
 reponses = {
     "Qu'est-ce qu'un commit ?": ["un enregistrement de modifications dans le dépôt Git", "une version d'un projet"],
     "Qu'est-ce que PEP 8 ?": ["un guide de style pour le code Python", "un package Python"],
     "Comment lister les fichiers d'un répertoire en ligne de commande ?": ["ls", "dir"]
 }
 
-# fonction pour vérifier si une réponse est similaire à une réponse attendue
-def check_answer(reponse_utilisateur, reponse_attendue):
-    # transformer les réponses en minuscules et enlever les espaces en début et fin
-    reponse_utilisateur = reponse_utilisateur.lower().strip()
-    reponse_attendue = [r.lower().strip() for r in reponse_attendue]
-    
-    # vérifier si la réponse de l'utilisateur est exactement la réponse attendue
-    if reponse_utilisateur in reponse_attendue:
-        return True
-    
-    # vérifier si la réponse de l'utilisateur est suffisamment similaire à la réponse attendue
-    for r in reponse_attendue:
-        if r.startswith(reponse_utilisateur) or reponse_utilisateur.startswith(r):
-            return True
-    
-    # si aucune des conditions n'est remplie, retourner False
-    return False
-
+# Page d'accueil
 @app.route('/')
-def home():
-    # sélectionner une question aléatoire
+def index():
+    # Sélectionne une question aléatoire
     question = random.choice(list(questions.values()))
-    
-    # afficher la page HTML avec la question et le bouton "Random Question"
+    # Affiche la page HTML avec la question
     return render_template('index.html', question=question)
 
-@app.route('/', methods=['POST'])
-def evaluate_answer():
-    # récupérer la réponse de l'utilisateur et la question actuelle
-    reponse_utilisateur = request.form['reponse']
+# Évaluation de la réponse
+@app.route('/evaluate', methods=['POST'])
+def evaluate():
+    # Récupère la réponse de l'utilisateur
+    user_answer = request.form['answer']
+    # Récupère la question correspondante à la réponse
     question = request.form['question']
-    
-    # récupérer la réponse attendue correspondante à la question
-    reponse_attendue = reponses[question]
-    
-    # vérifier si la réponse de l'utilisateur est valide et afficher le résultat correspondant
-    if check_answer(reponse_utilisateur, reponse_attendue):
-        resultat = "Bonne réponse !"
+    # Récupère la réponse attendue
+    expected_answers = reponses.get(question, [])
+    # Vérifie si la réponse est valide
+    if user_answer.lower() in [answer.lower() for answer in expected_answers]:
+        result = 'Réponse correcte !'
     else:
-        resultat = "Mauvaise réponse. Essayez encore."
-    
-    # afficher la page HTML avec le résultat
-    return render_template('result.html', resultat=resultat)
+        result = 'Réponse incorrecte. Veuillez réessayer.'
+    # Affiche la page HTML avec le résultat
+    return render_template('result.html', result=result)
 
-if __name__ == '__main__':
-    app.run()
-
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
