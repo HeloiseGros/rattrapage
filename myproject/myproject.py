@@ -58,7 +58,7 @@ def index():
     # Sélectionne une question aléatoire
     question = random.choice(list(questions.values()))
     # Affiche la page HTML avec la question
-    return render_template('index.html', question=question)
+    return render_template('index.html',question=question)
 
 # Évaluation de la réponse
 @app.route('/evaluate', methods=['POST'])
